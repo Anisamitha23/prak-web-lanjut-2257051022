@@ -23,5 +23,9 @@ Route::get('/', function () {
 
 Route::get('/user/profile', [ProfileController::class, 'profile']);
 Route::get('/user/create', [UserController::class,'create']);
+Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
 Route::post('/user/store', [UserController::class,'store'])->name('user.store');
 Route::get('/users', [UserController::class, 'index'])->name('user.index');
+Route::post('/user', [UserController::class, 'store'])->name('user.store');
+Route::get('/show/{id}', [UserController::class, 'show'])->name('users.show');
+Route::resource('user', UserController::class);
