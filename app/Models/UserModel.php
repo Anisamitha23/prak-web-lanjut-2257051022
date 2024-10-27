@@ -17,6 +17,7 @@ class UserModel extends Model
         'nama',
         'npm',
         'kelas_id',
+        'jurusan_id', // Menambahkan jurusan_id
         'foto', // Kolom foto ditambahkan
     ];
 
@@ -25,14 +26,21 @@ class UserModel extends Model
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
-    // Fungsi untuk mendapatkan data user dengan data kelas
+    // Relasi ke tabel jurusan (many-to-one)
+    public function jurusan(){
+        return $this->belongsTo(Jurusan::class, 'jurusan_id');
+    }
+
+    // Fungsi untuk mendapatkan data user dengan data kelas dan jurusan
     public function getUser($id = null){
         if ($id != null){
             return $this->join('kelas', 'kelas.id', '=', 'user.kelas_id') // Mengambil relasi kelas
-                    ->select('user.*', 'kelas.nama_kelas') // Pilih semua kolom dari tabel user
-                    ->where('user.id', $id)
-                    ->first(); // Ambil data
+                        ->join('jurusan', 'jurusan.id', '=', 'user.jurusan_id') // Mengambil relasi jurusan
+                        ->select('user.*', 'kelas.nama_kelas', 'jurusan.nama_jurusan') // Pilih semua kolom dari tabel user, kelas, dan jurusan
+                        ->where('user.id', $id)
+                        ->first(); // Ambil data
         }
-        
+    
     }
+
 }
