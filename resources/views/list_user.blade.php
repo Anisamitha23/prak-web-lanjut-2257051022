@@ -28,6 +28,8 @@
                             <th class="py-3 px-4 text-left">Nama</th>
                             <th class="py-3 px-4 text-left">NPM</th>
                             <th class="py-3 px-4 text-left">Kelas</th>
+                            <th class="py-3 px-4 text-left">Jurusan</th> <!-- Tambah kolom jurusan -->
+                            <th class="py-3 px-4 text-left">Fakultas</th> <!-- Tambah kolom fakultas -->
                             <th class="py-3 px-4 text-left">Foto</th>
                             <th class="py-3 px-4 text-left">Aksi</th>
                         </tr>
@@ -39,6 +41,8 @@
                                 <td class="py-3 px-4">{{ $user->nama }}</td>
                                 <td class="py-3 px-4">{{ $user->npm }}</td>
                                 <td class="py-3 px-4">{{ $user->kelas->nama_kelas ?? 'Tidak Ada Kelas' }}</td>
+                                <td class="py-3 px-4">{{ $user->jurusan->nama_jurusan ?? 'Tidak Ada Jurusan' }}</td> <!-- Menampilkan jurusan -->
+                                <td class="py-3 px-4">{{ $user->jurusan->fakultas->nama_fakultas ?? 'Tidak Ada Fakultas' }}</td> <!-- Menampilkan fakultas -->
                                 <td class="py-3 px-4">
                                     @if ($user->foto)
                                         <img src="{{ asset('storage/' . $user->foto) }}" alt="Foto Pengguna" class="w-16 h-16 rounded-full object-cover">

@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Jurusan;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -19,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/api/jurusan/{fakultas_id}', function ($fakultas_id) {
+    return Jurusan::where('fakultas_id', $fakultas_id)->get();
 });
 
 Route::get('/user/profile', [ProfileController::class, 'profile']);

@@ -44,6 +44,45 @@
                     @endforeach
                 </div>
 
+                <div class="relative">
+                    <select name="fakultas_id" id="fakultas_id" class="w-full py-4 px-5 bg-purple-50 rounded-lg border-2 border-pink-300 focus:outline-none focus:ring-4 focus:ring-pink-400 text-gray-800 font-medium tracking-wide" required>
+                        <option value="" disabled selected>Pilih Fakultas</option> <!-- Opsi Default -->
+                        @foreach ($fakultas as $fakultasItem)
+                        <option value="{{$fakultasItem->id}}">{{$fakultasItem->nama_fakultas}}</option>
+                        @endforeach
+                    </select>
+                    @foreach($errors->get('fakultas_id') as $msg)
+                        <p class="text-red-500 text-xs mt-1 text-left">{{ $msg }}</p>
+                    @endforeach
+                </div>
+
+                <!-- Menambahkan input jurusan -->
+                <div class="relative">
+                    <select name="jurusan_id" id="jurusan_id" class="w-full py-4 px-5 bg-purple-50 rounded-lg border-2 border-pink-300 focus:outline-none focus:ring-4 focus:ring-pink-400 text-gray-800 font-medium tracking-wide" required>
+                        <option value="" disabled selected>Pilih Jurusan</option> <!-- Opsi Default -->
+                        <!-- Jurusan akan dimuat secara dinamis berdasarkan fakultas yang dipilih -->
+                    </select>
+                    @foreach($errors->get('jurusan_id') as $msg)
+                        <p class="text-red-500 text-xs mt-1 text-left">{{ $msg }}</p>
+                    @endforeach
+                </div>
+
+                <!-- Tambahkan JavaScript untuk memuat jurusan berdasarkan fakultas -->
+                <script>
+                    document.getElementById('fakultas_id').addEventListener('change', function() {
+                        let fakultasId = this.value;
+                        fetch('/api/jurusan/' + fakultasId)
+                            .then(response => response.json())
+                            .then(data => {
+                                let jurusanSelect = document.getElementById('jurusan_id');
+                                jurusanSelect.innerHTML = '<option value="" disabled selected>Pilih Jurusan</option>';
+                                data.forEach(jurusan => {
+                                    jurusanSelect.innerHTML += `<option value="${jurusan.id}">${jurusan.nama_jurusan}</option>`;
+                                });
+                            });
+                    });
+                </script>
+
                 <!-- Menambahkan input file untuk foto -->
                 <div class="relative">
                     <label for="foto" class="block text-sm font-medium text-gray-700">Foto:</label>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\Jurusan; // Tambahkan model Jurusan
+use App\Models\Fakultas; // Tambahkan Fakultas
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 
@@ -23,7 +25,7 @@ class UserController extends Controller
     public function index(){
         $data = [
             'title' => 'List Users',
-            'users' => $this->userModel->with('kelas')->orderBy('id')->get(),
+            'users' => $this->userModel->with(['kelas', 'jurusan.fakultas'])->orderBy('id')->get(),
         ];
         return view('list_user', $data);
     }
@@ -33,6 +35,8 @@ class UserController extends Controller
         $data = [
             'title' => 'Create User',
             'kelas' => Kelas::all(), // Mengambil semua data kelas dari database
+            'jurusan' => Jurusan::all(), // Mengambil semua data jurusan dari database
+            'fakultas' => Fakultas::all(),
         ];
         return view('create_user', $data);
     }
@@ -44,6 +48,8 @@ class UserController extends Controller
             'nama' => 'required|string|max:255',
             'npm' => 'required|string|max:255',
             'kelas_id' => 'required|exists:kelas,id',
+            'jurusan_id' => 'required|exists:jurusan,id', // Validasi untuk jurusan_id
+            'fakultas_id' => 'required|exists:fakultas,id', // Validasi fakultas
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validasi untuk foto
         ]);
 
@@ -61,11 +67,12 @@ class UserController extends Controller
             'nama' => $request->input('nama'),
             'npm' => $request->input('npm'),
             'kelas_id' => $request->input('kelas_id'),
+            'jurusan_id' => $request->input('jurusan_id'), // Menyimpan jurusan_id
             'foto' => $fotoPath, // Menyimpan path foto
         ]);
 
         return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan');
-
+    
     }
 
     public function show($id){
@@ -89,7 +96,8 @@ class UserController extends Controller
         $data = [
             'title' => 'Edit User',
             'user' => $user,
-            'kelas' => Kelas::all() // Mengambil semua data kelas untuk dipilih
+            'kelas' => Kelas::all(), // Mengambil semua data kelas untuk dipilih
+            'jurusan' => Jurusan::all(), // Mengambil semua data jurusan untuk dipilih
         ];
 
         return view('edit_user', $data);
@@ -103,6 +111,7 @@ class UserController extends Controller
             'nama' => 'required|string|max:255',
             'npm' => 'required|string|max:255',
             'kelas_id' => 'required|exists:kelas,id',
+            'jurusan_id' => 'required|exists:jurusan,id', // Validasi untuk jurusan_id
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
     
@@ -110,6 +119,7 @@ class UserController extends Controller
         $user->nama = $request->nama;
         $user->npm = $request->npm;
         $user->kelas_id = $request->kelas_id;
+        $user->jurusan_id = $request->jurusan_id; // Simpan jurusan_id
     
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
@@ -128,8 +138,8 @@ class UserController extends Controller
         return redirect()->route('user.index')->with('success', 'User updated successfully');
     }
     
-    
 
+    
     public function destroy($id){
         $user = UserModel::findOrFail($id);
         $user->delete();
